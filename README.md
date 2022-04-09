@@ -10,3 +10,4 @@
 |  47 | [Permutations II](docs/0047.md)                                | Medium     | 98.1% | 2022/04/04     |
 |  70 | [Climbing Stairs](docs/0070.md)                                | Easy       | 97.0% | 2022/03/05     |
 | 125 | [Valid Palindrome](docs/0125.md)                               | Easy       | 40.4% | 2022/04/02     |
+| 153 | [Find Minimum in Rotated Sorted Array](docs/0153.md)           | Medium     | 94.5% | 2021/09/02     |
