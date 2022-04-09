@@ -6,3 +6,4 @@
 |  21 | [Merge Two Sorted Lists](docs/0021.md)                         | Easy       | 91.7% | 2022/03/08     |
 |  31 | [Next Permutation](docs/0031.md)                               | Medium     | 75.4% | 2022/04/06     |
 |  36 | [Valid Sudoku](docs/0036.md)                                   | Medium     | 87.4% | 2022/03/31     |
+|  46 | [Permutations](docs/0046.md)                                   | Medium     | 98.2% | 2022/04/04     |
