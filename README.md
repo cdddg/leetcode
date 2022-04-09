@@ -9,3 +9,4 @@
 |  46 | [Permutations](docs/0046.md)                                   | Medium     | 98.2% | 2022/04/04     |
 |  47 | [Permutations II](docs/0047.md)                                | Medium     | 98.1% | 2022/04/04     |
 |  70 | [Climbing Stairs](docs/0070.md)                                | Easy       | 97.0% | 2022/03/05     |
+| 125 | [Valid Palindrome](docs/0125.md)                               | Easy       | 40.4% | 2022/04/02     |
