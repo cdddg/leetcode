@@ -15,3 +15,4 @@
 | 344 | [Reverse String](docs/0344.md)                                 | Easy       | 83.7% | 2022/04/02     |
 | 442 | [Find All Duplicates in an Array](docs/0442.md)                | Medium     | 96.0% | 2021/10/06     |
 | 565 | [Array Nesting](docs/0565.md)                                  | Medium     | 93.0% | 2021/09/02     |
+| 680 | [Valid Palindrome II](docs/0680.md)                            | Easy       | 94.9% | 2022/04/02     |
