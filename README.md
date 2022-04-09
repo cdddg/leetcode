@@ -11,3 +11,4 @@
 |  70 | [Climbing Stairs](docs/0070.md)                                | Easy       | 97.0% | 2022/03/05     |
 | 125 | [Valid Palindrome](docs/0125.md)                               | Easy       | 40.4% | 2022/04/02     |
 | 153 | [Find Minimum in Rotated Sorted Array](docs/0153.md)           | Medium     | 94.5% | 2021/09/02     |
+| 231 | [Power of Two](docs/0231.md)                                   | Easy       | 91.5% | 2021/12/21     |
