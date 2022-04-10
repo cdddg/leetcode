@@ -4,6 +4,7 @@ from uuid import uuid4 as _uuid4
 from sqlalchemy import BOOLEAN, Column, DateTime, Enum, Float, ForeignKey, \
     Integer, String, Text
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
 
 from .enum import LevelEnum
 
@@ -28,13 +29,25 @@ class Question(Base):
     created_at = Column(DateTime, nullable=True, default=datetime.now)
     updated_at = Column(DateTime, nullable=True, onupdate=datetime.now)
 
+    similarities = relationship(
+        'QuestionSimilarity',
+        lazy='selectin',
+        primaryjoin='Question.id == QuestionSimilarity.question_id',
+    )
+    tags = relationship('QuestionTag', lazy='selectin')
+
 
 class QuestionSimilarity(Base):
     __tablename__ = 'question_similarity'
 
     id = Column(Integer, primary_key=True)
     question_id = Column(String(32), ForeignKey(Question.id), nullable=True)
-    similaroty_id = Column(String(32), ForeignKey(Question.id), nullable=True)
+    similarity_id = Column(String(32), ForeignKey(Question.id), nullable=True)
+
+    question = relationship(
+        Question, foreign_keys=[question_id], overlaps='similarities'
+    )
+    similarity = relationship(Question, foreign_keys=[similarity_id])
 
 
 class QuestionTag(Base):

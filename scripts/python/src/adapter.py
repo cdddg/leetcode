@@ -1,3 +1,4 @@
+import copy
 import json
 import random
 import time
@@ -31,8 +32,8 @@ class QuestionNode:
     tags: List[str]
     similarities: List[str]
 
-    def to_dict(self):
-        dict_ = vars(self)
+    def to_dict(self) -> dict:
+        dict_ = copy.deepcopy(vars(self))
         dict_.pop('__initialised__', None)
 
         return dict_
@@ -57,7 +58,7 @@ class LeetcodeAdapter:
     def get_chrome_cookies(self):
         return browsercookie.chrome()
 
-    def get_questions(self) -> dict:
+    def get_question_id(self, no: int) -> str:
         url = f'{self.base_url}/api/problems/all/'
         resp = self.session.get(
             url,
@@ -72,9 +73,9 @@ class LeetcodeAdapter:
                 'question__title_slug'
             ]
 
-        return question_no_to_id_map
+        return question_no_to_id_map[no]
 
-    def get_question(self, id_: str) -> QuestionNode:
+    def get_question_data(self, id_: str) -> QuestionNode:
         time.sleep(random.randint(1, 3))
         params = {
             'operationName': 'getQuestionDetail',
@@ -120,7 +121,7 @@ class LeetcodeAdapter:
         return QuestionNode(
             id=data['question']['questionTitleSlug'],
             no=data['question']['questionFrontendId'],
-            level=data['question']['difficulty'],
+            level=LevelEnum(data['question']['difficulty'].upper()),
             like=data['question']['likes'],
             dislike=data['question']['dislikes'],
             acceptance=round(
