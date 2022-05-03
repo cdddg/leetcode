@@ -56,11 +56,10 @@ class QuestionRepository(BaseRepository):
             self._session.query(self.MODEL_CLS)
             .filter_by(no=no)
             .options(
-                selectinload(self.MODEL_CLS.similarities).joinedload(
-                    'similarity'
-                ),
+                selectinload(self.MODEL_CLS.similarities),
                 selectinload(self.MODEL_CLS.tags),
             )
+            .populate_existing()
             .one_or_none()
         )
 
@@ -89,12 +88,6 @@ class QuestionTagRepository(BaseRepository):
 
 
 class MarkdownRepository:
-    def _get_md_content(self, no: int) -> str:
-        with open(self._build_md_path(no)) as f:
-            content = f.read()
-
-        return content
-
     @staticmethod
     def _get_md_solution_title(content: str) -> re.Match:
         if match := re.search(r'## Solutions \[\^[0-9]*\]:', content):
@@ -130,11 +123,33 @@ class MarkdownRepository:
     def _build_md_name(no: int):
         return f'{no:04}.md'
 
+    @staticmethod
+    def get_md_numbers() -> List[int]:
+        _, _, files = list(os.walk(DOC_PATH))[0]
+
+        return sorted(
+            [
+                int(os.path.splitext(f)[0])
+                for f in files
+                if os.path.splitext(f)[1] == '.md'
+            ]
+        )
+
+    def _get_md_content(self, no: int) -> str:
+        with open(self._build_md_path(no)) as f:
+            content = f.read()
+
+        return content
+
     def _build_md_path(self, no: int):
         return os.path.join(DOC_PATH, self._build_md_name(no))
 
     def is_existed_md(self, no: int):
         return os.path.exists(self._build_md_path(no))
+
+    def get_last_commited_at(self, no: int) -> str:
+        with open(self._build_md_path(no)) as f:
+            return self._get_md_last_commited_at(f.read()).group(2)
 
     def create_question_md(self, no: int, question: Question, commited_at: str):
         with open(self._build_md_path(no), 'w', encoding='utf-8') as f:
@@ -208,6 +223,9 @@ class MarkdownRepository:
         with open(self._build_md_path(no)) as f:
             content = f.read()
             last_commit_at = self._get_md_last_commited_at(content)
+            if last_commit_at.group(2) == commited_at:
+                return
+
             title = self._get_md_solution_title(content).group()
             content = content.replace(
                 title, f'## Solutions [^{int(last_commit_at.group(1)) + 1}]:'
@@ -215,9 +233,6 @@ class MarkdownRepository:
                 last_commit_at.group(0),
                 f'{last_commit_at.group(0)}\n[^{int(last_commit_at.group(1)) + 1}]: `{commited_at}`\n',
             )
-            if last_commit_at.group(2) == commited_at:
-                return
-
         with open(self._build_md_path(no), 'w', encoding='utf-8') as f:
             f.write(content)
 

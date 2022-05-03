@@ -1,14 +1,15 @@
 from datetime import date
+from time import sleep
 from typing import Union
 
 from .adapter import LeetcodeAdapter
-from .db import transaction
+from .db import get_session, transaction
 from .repository import markdown_repo, question_repo, \
     question_similarity_repo, question_tag_repo
 
 
 @transaction()
-def insert_or_update_question(no: int, commited_at: Union[str, None]):
+def upsert_question(no: int, commited_at: Union[str, None]):
     commited_at = (
         commited_at if commited_at else date.today().strftime('%Y/%m/%d')
     )
@@ -24,6 +25,10 @@ def insert_or_update_question(no: int, commited_at: Union[str, None]):
         kwargs.pop('tags')
         kwargs.pop('similarities')
         question = question_repo.insert(**kwargs)
+    else:
+        question.acceptance = data.acceptance
+        question.like = data.like
+        question.dislike = data.dislike
 
     # insert or delete similarities
     if not question.is_paid_only:
@@ -61,9 +66,20 @@ def insert_or_update_question(no: int, commited_at: Union[str, None]):
         for tag in raw:
             question_tag_repo.delete(question_id=question_id, tag=tag)
 
+    get_session().flush()
+    question = question_repo.get_by_no(no)
     if not markdown_repo.is_existed_md(no):
         markdown_repo.create_question_md(no, question, commited_at)
     else:
         markdown_repo.add_commited_at(no, question, commited_at)
 
+
+def upsert_markdowns_to_db():
+    for no in markdown_repo.get_md_numbers():
+        print('--no', no)
+        upsert_question(no, markdown_repo.get_last_commited_at(no))
+        sleep(10)
+
+
+def upsert_readme_md():
     markdown_repo.create_readme_md()

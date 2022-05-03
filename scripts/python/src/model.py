@@ -33,6 +33,7 @@ class Question(Base):
         'QuestionSimilarity',
         lazy='selectin',
         primaryjoin='Question.id == QuestionSimilarity.question_id',
+        back_populates='question',
     )
     tags = relationship('QuestionTag', lazy='selectin')
 
@@ -45,7 +46,10 @@ class QuestionSimilarity(Base):
     similarity_id = Column(String(32), ForeignKey(Question.id), nullable=True)
 
     question = relationship(
-        Question, foreign_keys=[question_id], overlaps='similarities'
+        Question,
+        foreign_keys=[question_id],
+        overlaps='similarities',
+        back_populates='similarities',
     )
     similarity = relationship(Question, foreign_keys=[similarity_id])
 
